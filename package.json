@@ -1,0 +1,35 @@
+{
+  "name": "submission-bookshelf-api",
+  "version": "1.0.0",
+  "description": "Submission Bookshelf API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "lint": "eslint --ext .js,.jsx .",
+    "migrate": "node-pg-migrate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Arif Setyo Aji",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/hapi": "^20.2.2",
+    "dotenv": "^16.0.2",
+    "joi": "^17.6.0",
+    "lodash": "^4.17.21",
+    "node-pg-migrate": "^6.2.2",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.23.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.7.1"
+  }
+}
