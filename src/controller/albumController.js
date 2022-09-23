@@ -15,11 +15,34 @@ class AlbumController {
     }
   }
 
-  static async postAlbum(request, h) {
+  static async insertAlbum(request, h) {
     try {
-      const payload = request.body;
+      const { payload } = request;
       const albumId = await AlbumService.insertAlbum(payload);
-      return res.ok({ h, data: { albumId } });
+      return res.created({ h, data: { albumId: albumId.id } });
+    } catch (error) {
+      logger.debug(error.message);
+      return errorHandler(h, error);
+    }
+  }
+
+  static async editAlbum(request, h) {
+    try {
+      const { id } = request.params;
+      const { payload } = request;
+      const message = await AlbumService.editAlbum(id, payload);
+      return res.ok({ h, message });
+    } catch (error) {
+      logger.debug(error.message);
+      return errorHandler(h, error);
+    }
+  }
+
+  static async deleteAlbum(request, h) {
+    try {
+      const { id } = request.params;
+      const message = await AlbumService.deleteAlbum(id);
+      return res.ok({ h, message });
     } catch (error) {
       logger.debug(error.message);
       return errorHandler(h, error);

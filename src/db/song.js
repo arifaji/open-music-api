@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const model = sequelize.define(
-    'albumBean',
+    'songBean',
     {
       id: {
         type: DataTypes.STRING,
@@ -8,15 +8,35 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id',
         allowNull: false,
       },
-      name: {
+      title: {
         type: DataTypes.STRING,
-        field: 'name',
+        field: 'title',
         allowNull: false,
       },
       year: {
         type: DataTypes.INTEGER,
         field: 'year',
         allowNull: false,
+      },
+      genre: {
+        type: DataTypes.STRING,
+        field: 'genre',
+        allowNull: false,
+      },
+      performer: {
+        type: DataTypes.STRING,
+        field: 'performer',
+        allowNull: false,
+      },
+      duration: {
+        type: DataTypes.INTEGER,
+        field: 'duration',
+        allowNull: true,
+      },
+      albumId: {
+        type: DataTypes.STRING,
+        field: 'albumId',
+        allowNull: true,
       },
       created_date: {
         type: DataTypes.DATE,
@@ -30,20 +50,22 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'albums',
+      tableName: 'songs',
       timestamps: false,
     }
   );
 
-  model.associate = ({ songBean }) => {
-    model.hasManySong = model.hasMany(songBean, {
-      as: 'songs',
-      foreignKey: 'albumId',
-      targetKey: 'id',
-    });
-  };
-
-  model.attributes = ['id', 'name', 'year', 'created_date', 'modified_date'];
+  model.attributes = [
+    'id',
+    'title',
+    'year',
+    'genre',
+    'performer',
+    'duration',
+    'albumId',
+    'created_date',
+    'modified_date',
+  ];
 
   return model;
 };

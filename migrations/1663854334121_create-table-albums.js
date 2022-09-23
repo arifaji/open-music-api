@@ -16,11 +16,11 @@ exports.up = pgm => {
       type: 'INT',
       notNull: true,
     },
-    created_at: {
+    created_date: {
       type: 'TIMESTAMP',
       notNull: false,
     },
-    updated_at: {
+    modified_date: {
       type: 'TIMESTAMP',
       notNull: false,
     },

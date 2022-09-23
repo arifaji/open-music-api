@@ -1,7 +1,7 @@
+const _ = require('lodash');
 const AlbumDao = require('../dao/AlbumDao');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
-const logger = require('../util/logger');
 const { validate } = require('../validator/validator');
 
 class AlbumService {
@@ -9,7 +9,7 @@ class AlbumService {
     if (!id) {
       throw new InvariantError('please provide ID...');
     }
-    const album = await AlbumDao.getAlbumById(id);
+    const album = await AlbumDao.getAlbumIncludeSongById(id);
     if (!album) {
       throw new NotFoundError('Album not found..');
     }
@@ -18,8 +18,29 @@ class AlbumService {
 
   static async insertAlbum(payload) {
     const valid = validate('insertAlbum', payload);
-    console.log(valid);
-    return 'album-id';
+    const { value } = valid;
+    const album = await AlbumDao.insertAlbum(value);
+    return _.pick(album, ['id']);
+  }
+
+  static async editAlbum(id, payload) {
+    const valid = validate('insertAlbum', payload);
+    const { name, year } = valid.value;
+    const existingAlbum = await AlbumDao.getAlbumById(id);
+    if (!existingAlbum) {
+      throw new NotFoundError('Album not found..');
+    }
+    await AlbumDao.updateAlbumById(id, { name, year });
+    return 'Success update album';
+  }
+
+  static async deleteAlbum(id) {
+    const existingAlbum = await AlbumDao.getAlbumById(id);
+    if (!existingAlbum) {
+      throw new NotFoundError('Album not found..');
+    }
+    await AlbumDao.deleteAlbumById(id);
+    return 'Success delete album...';
   }
 }
 

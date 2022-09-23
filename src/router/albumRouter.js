@@ -9,6 +9,16 @@ module.exports = [
   {
     method: 'POST',
     path: '/albums',
-    handler: AlbumController.postAlbum,
+    handler: AlbumController.insertAlbum,
+  },
+  {
+    method: 'PUT',
+    path: '/albums/{id}',
+    handler: AlbumController.editAlbum,
+  },
+  {
+    method: 'DELETE',
+    path: '/albums/{id}',
+    handler: AlbumController.deleteAlbum,
   },
 ];
