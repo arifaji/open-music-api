@@ -6,4 +6,9 @@ module.exports = [
     path: '/albums/{id}',
     handler: AlbumController.getAlbumById,
   },
+  {
+    method: 'POST',
+    path: '/albums',
+    handler: AlbumController.postAlbum,
+  },
 ];
