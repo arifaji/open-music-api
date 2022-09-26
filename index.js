@@ -3,6 +3,7 @@ const config = require('./src/config');
 const logger = require('./src/util/logger');
 const router = require('./src/router');
 const { sequelize } = require('./src/db/index');
+const ClientError = require('./src/exceptions/ClientError');
 
 require('dotenv').config();
 
@@ -19,6 +20,27 @@ const init = async () => {
 
   // Register the plugins
   await server.register(router);
+  server.ext('onPreResponse', (request, h) => {
+    // mendapatkan konteks response dari request
+    const { response } = request;
+    if (response instanceof ClientError) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: response.message,
+      });
+      newResponse.code(response.statusCode);
+      return newResponse;
+    }
+    if (response instanceof Error) {
+      const newResponse = h.response({
+        status: 'error',
+        message: 'Internal Server Error...',
+      });
+      newResponse.code(response.statusCode);
+      return newResponse;
+    }
+    return response.continue || response;
+  });
 
   await server.start();
   logger.info(`Server berjalan pada ${server.info.uri} ${process.env.ENV}`);

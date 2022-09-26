@@ -1,12 +1,14 @@
 const Joi = require('joi');
 const InvariantError = require('../exceptions/InvariantError');
+const { validationSchema } = require('../util/enums');
 
-const insertAlbum = Joi.object({
+const schemas = {};
+schemas[validationSchema.INSERT_ALBUM] = Joi.object({
   name: Joi.string().required(),
   year: Joi.number().required(),
 });
 
-const insertSong = Joi.object({
+schemas[validationSchema.INSERT_SONG] = Joi.object({
   title: Joi.string().required(),
   year: Joi.number().required(),
   genre: Joi.string().required(),
@@ -16,10 +18,6 @@ const insertSong = Joi.object({
 });
 
 const validate = (schema, payload) => {
-  const schemas = {
-    insertAlbum,
-    insertSong,
-  };
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(
       {

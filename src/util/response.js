@@ -21,17 +21,6 @@ const created = ({ h, data, message }) => {
   return response;
 };
 
-// The server could not understand the request due to invalid syntax.
-const bad = ({ h, data, message = 'Bad Request...' }) => {
-  const response = h.response({
-    status: 'fail',
-    message,
-    data,
-  });
-  response.code(400);
-  return response;
-};
-
 module.exports = {
   ok,
   created,

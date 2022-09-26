@@ -3,6 +3,7 @@ const AlbumDao = require('../dao/AlbumDao');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
 const { validate } = require('../validator/validator');
+const { validationSchema } = require('../util/enums');
 
 class AlbumService {
   static async getAlbumById(id) {
@@ -17,14 +18,14 @@ class AlbumService {
   }
 
   static async insertAlbum(payload) {
-    const valid = validate('insertAlbum', payload);
+    const valid = validate(validationSchema.INSERT_ALBUM, payload);
     const { value } = valid;
     const album = await AlbumDao.insertAlbum(value);
     return _.pick(album, ['id']);
   }
 
   static async editAlbum(id, payload) {
-    const valid = validate('insertAlbum', payload);
+    const valid = validate(validationSchema.INSERT_ALBUM, payload);
     const { name, year } = valid.value;
     const existingAlbum = await AlbumDao.getAlbumById(id);
     if (!existingAlbum) {

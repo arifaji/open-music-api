@@ -4,10 +4,11 @@ const AlbumDao = require('../dao/AlbumDao');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
 const { validate } = require('../validator/validator');
+const { validationSchema } = require('../util/enums');
 
 class SongService {
   static async insertSong(payload) {
-    const valid = validate('insertSong', payload);
+    const valid = validate(validationSchema.INSERT_SONG, payload);
     const { value } = valid;
     if (value.albumId) {
       const existingAlbum = await AlbumDao.getAlbumById(value.albumId);
@@ -36,7 +37,7 @@ class SongService {
   }
 
   static async editSong(id, payload) {
-    const valid = validate('insertSong', payload);
+    const valid = validate(validationSchema.INSERT_SONG, payload);
     const { value } = valid;
     const existingSong = await SongDao.getSongById(id);
     if (!existingSong) {
