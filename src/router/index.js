@@ -1,7 +1,8 @@
 const routes = [].concat(
   require('./albumRouter'),
   require('./songRouter'),
-  require('./userRouter')
+  require('./userRouter'),
+  require('./authRouter')
 );
 
 module.exports = {

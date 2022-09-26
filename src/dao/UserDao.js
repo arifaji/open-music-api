@@ -13,6 +13,7 @@ class AlbumDao {
   static findUserByUsername(username) {
     return userBean.findOne({
       where: { username },
+      attributes: ['id', 'password'],
     });
   }
 }

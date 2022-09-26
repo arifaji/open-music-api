@@ -2,8 +2,9 @@ const Sequelize = require('sequelize');
 const albums = require('./albums');
 const songs = require('./songs');
 const users = require('./users');
+const authentications = require('./authentications');
 
-const models = [albums, songs, users];
+const models = [albums, songs, users, authentications];
 const db = {};
 
 const sequelize = new Sequelize(

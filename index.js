@@ -32,6 +32,9 @@ const init = async () => {
       logger.debug(response.statusCode);
       return newResponse;
     }
+    if (response instanceof Error) {
+      logger.debug(response.message);
+    }
     return response.continue || response;
   });
 

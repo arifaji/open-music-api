@@ -23,6 +23,11 @@ schemas[validationSchema.INSERT_USER] = Joi.object({
   fullname: Joi.string().required(),
 });
 
+schemas[validationSchema.LOGIN_USER] = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

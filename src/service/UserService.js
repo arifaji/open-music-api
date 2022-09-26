@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const bcrypt = require('bcrypt');
 const UserDao = require('../dao/UserDao');
 const InvariantError = require('../exceptions/InvariantError');
 const { validate } = require('../validator/validator');
@@ -12,7 +13,11 @@ class UserService {
     if (existingUsername) {
       throw new InvariantError('Username already exist...');
     }
-    const user = await UserDao.insertUser(value);
+    const hashedPassword = await bcrypt.hash(value.password, 10);
+    const user = await UserDao.insertUser({
+      ...value,
+      password: hashedPassword,
+    });
     return _.pick(user, ['id']);
   }
 }
