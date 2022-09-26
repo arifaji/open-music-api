@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       albumId: {
         type: DataTypes.STRING,
-        field: 'albumId',
+        field: 'album_id',
         allowNull: true,
       },
       created_date: {
