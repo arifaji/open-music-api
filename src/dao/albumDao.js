@@ -23,7 +23,7 @@ class AlbumDao {
   }
 
   static insertAlbum(payload) {
-    const generateAlbumId = `album-${nanoid()}`;
+    const generateAlbumId = `album-${nanoid(16)}`;
     return albumBean.create({
       id: generateAlbumId,
       ...payload,

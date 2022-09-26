@@ -5,7 +5,7 @@ const { Op } = Sequelize;
 
 class SongDao {
   static insertSong(payload) {
-    const generateSongId = `song-${nanoid()}`;
+    const generateSongId = `song-${nanoid(16)}`;
     return songBean.create({
       ...payload,
       id: generateSongId,

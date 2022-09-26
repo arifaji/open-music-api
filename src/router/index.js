@@ -1,4 +1,8 @@
-const routes = [].concat(require('./albumRouter'), require('./songRouter'));
+const routes = [].concat(
+  require('./albumRouter'),
+  require('./songRouter'),
+  require('./userRouter')
+);
 
 module.exports = {
   plugin: {

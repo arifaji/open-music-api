@@ -17,6 +17,12 @@ schemas[validationSchema.INSERT_SONG] = Joi.object({
   albumId: Joi.string().allow(null),
 });
 
+schemas[validationSchema.INSERT_USER] = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  fullname: Joi.string().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

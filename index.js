@@ -29,14 +29,7 @@ const init = async () => {
         message: response.message,
       });
       newResponse.code(response.statusCode);
-      return newResponse;
-    }
-    if (response instanceof Error) {
-      const newResponse = h.response({
-        status: 'error',
-        message: 'Internal Server Error...',
-      });
-      newResponse.code(response.statusCode);
+      logger.debug(response.statusCode);
       return newResponse;
     }
     return response.continue || response;
