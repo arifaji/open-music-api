@@ -1,4 +1,6 @@
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
+
 const config = require('./src/config');
 const logger = require('./src/util/logger');
 const router = require('./src/router');
@@ -18,10 +20,30 @@ const init = async () => {
     },
   });
 
-  // Register the plugins
-  await server.register(router);
+  await server.register([
+    router,
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  server.auth.strategy('openmusic_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
   server.ext('onPreResponse', (request, h) => {
-    // mendapatkan konteks response dari request
     const { response } = request;
     if (response instanceof ClientError) {
       const newResponse = h.response({

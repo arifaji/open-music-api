@@ -28,6 +28,10 @@ schemas[validationSchema.LOGIN_USER] = Joi.object({
   password: Joi.string().required(),
 });
 
+schemas[validationSchema.REFRESH_TOKEN] = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       token: {
         type: DataTypes.STRING,
         field: 'token',
+        primaryKey: true,
         allowNull: false,
       },
     },

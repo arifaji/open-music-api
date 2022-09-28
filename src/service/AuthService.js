@@ -1,10 +1,13 @@
-const _ = require('lodash');
 const bcrypt = require('bcrypt');
+
+const AuthDao = require('../dao/AuthDao');
 const UserDao = require('../dao/UserDao');
 const InvariantError = require('../exceptions/InvariantError');
+const AuthenticationError = require('../exceptions/AuthenticationError');
 const {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } = require('../util/tokenManager');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
@@ -16,19 +19,39 @@ class AuthenticationService {
 
     const user = await UserDao.findUserByUsername(value.username);
     if (!user) {
-      throw new InvariantError('Incorrect Username / Password...');
+      throw new AuthenticationError('Incorrect Username / Password...');
     }
-    console.log(value.password, user.password);
     const match = await bcrypt.compare(value.password, user.password);
-    console.log(match);
 
     if (!match) {
-      throw new InvariantError('Incorrect Username / Password...');
+      throw new AuthenticationError('Incorrect Username / Password...');
     }
     const accessToken = generateAccessToken({ id: user.id });
     const refreshToken = generateRefreshToken({ id: user.id });
 
+    await AuthDao.insertToken(refreshToken);
+
     return { accessToken, refreshToken };
+  }
+
+  static async refresh(payload) {
+    const valid = validate(validationSchema.REFRESH_TOKEN, payload);
+    const { value } = valid;
+    const { id } = verifyRefreshToken(value.refreshToken);
+    const authToken = await AuthDao.findToken(value.refreshToken);
+    if (!authToken) {
+      throw new InvariantError('Invalid Refresh Token...');
+    }
+    const accessToken = generateAccessToken({ id });
+    return accessToken;
+  }
+
+  static async delete(payload) {
+    const valid = validate(validationSchema.REFRESH_TOKEN, payload);
+    const { value } = valid;
+    const { id } = verifyRefreshToken(value.refreshToken);
+    await AuthDao.deleteTolen(value.refreshToken);
+    return `Token ${id} deleted...`;
   }
 }
 

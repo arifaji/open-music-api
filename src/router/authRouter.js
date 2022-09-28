@@ -6,4 +6,14 @@ module.exports = [
     path: '/authentications',
     handler: AuthController.postAuth,
   },
+  {
+    method: 'PUT',
+    path: '/authentications',
+    handler: AuthController.refresh,
+  },
+  {
+    method: 'DELETE',
+    path: '/authentications',
+    handler: AuthController.delete,
+  },
 ];
