@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const model = sequelize.define(
-    'collaborationBean',
+    'playlistSongActivityBean',
     {
       id: {
         type: DataTypes.STRING,
@@ -13,12 +13,22 @@ module.exports = (sequelize, DataTypes) => {
         field: 'playlist_id',
         allowNull: false,
       },
+      songId: {
+        type: DataTypes.STRING,
+        field: 'song_id',
+        allowNull: false,
+      },
       userId: {
         type: DataTypes.STRING,
         field: 'user_id',
         allowNull: false,
       },
-      created_date: {
+      action: {
+        type: DataTypes.STRING,
+        field: 'action',
+        allowNull: false,
+      },
+      time: {
         type: DataTypes.DATE,
         field: 'created_date',
         allowNull: false,
@@ -30,16 +40,31 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'collaborations',
+      tableName: 'playlist_song_activities',
       timestamps: false,
     }
   );
 
+  model.associate = ({ userBean, songBean }) => {
+    model.belongsToUser = model.belongsTo(userBean, {
+      as: 'user',
+      foreignKey: 'user_id',
+      targetKey: 'id',
+    });
+    model.belongsToSong = model.belongsTo(songBean, {
+      as: 'song',
+      foreignKey: 'song_id',
+      targetKey: 'id',
+    });
+  };
+
   model.attributes = [
     'id',
     'playlistId',
+    'songId',
     'userId',
-    'created_date',
+    'action',
+    'time',
     'modified_date',
   ];
 

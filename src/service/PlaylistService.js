@@ -1,8 +1,9 @@
 const _ = require('lodash');
-
+const { sequelize } = require('../db/index');
 const SongDao = require('../dao/SongDao');
 const PlaylistDao = require('../dao/PlaylistDao');
 const PlaylistSongDao = require('../dao/PlaylistSongDao');
+const PlaylistSongActivityDao = require('../dao/PlaylistSongActivityDao');
 const CollaborationDao = require('../dao/CollaborationDao');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
@@ -47,11 +48,31 @@ class PlaylistService {
     if (!song) {
       throw new NotFoundError('Song Not Found...');
     }
-    await PlaylistSongDao.insertPlaylistSong({
-      playlistId,
-      songId,
-      userId,
-    });
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      await PlaylistSongDao.insertPlaylistSong(
+        {
+          playlistId,
+          songId,
+          userId,
+        },
+        transaction
+      );
+      await PlaylistSongActivityDao.insertActivity(
+        {
+          playlistId,
+          songId,
+          userId,
+          action: 'add',
+        },
+        transaction
+      );
+      await transaction.commit();
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      throw new Error(error.message);
+    }
     return 'Success add song to playlist...';
   }
 
@@ -97,7 +118,24 @@ class PlaylistService {
     if (!playlistSong) {
       throw new InvariantError('Song in Playlist Not Found...');
     }
-    await PlaylistSongDao.deleteBySongId(songId);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      await PlaylistSongDao.deleteBySongId(songId, transaction);
+      await PlaylistSongActivityDao.insertActivity(
+        {
+          playlistId,
+          songId,
+          userId,
+          action: 'delete',
+        },
+        transaction
+      );
+      await transaction.commit();
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      throw new Error(error.message);
+    }
     return 'Success Delete Song From Playlist...';
   }
 
@@ -111,6 +149,30 @@ class PlaylistService {
     }
     await PlaylistDao.deletePlaylistById(playlistId);
     return 'Success Delete Playlist...';
+  }
+
+  static async getPlaylistActivity(userId, playlistId) {
+    const playlist = await PlaylistDao.getPlaylistById(playlistId);
+    if (!playlist) {
+      throw new NotFoundError('Playlist Not Found...');
+    }
+    if (playlist.userId !== userId) {
+      const collaboration =
+        await CollaborationDao.findCollaborationByPlaylistAndUser({
+          playlistId,
+          userId,
+        });
+      if (!collaboration) {
+        throw new AuthorizationError('Forbidden...');
+      }
+    }
+    const activities = await PlaylistSongActivityDao.getAllActivityByPlaylistId(
+      playlistId
+    );
+    return {
+      playlistId,
+      activities,
+    };
   }
 }
 

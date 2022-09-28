@@ -18,6 +18,10 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    action: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
     created_date: {
       type: 'TIMESTAMP',
       notNull: false,

@@ -2,12 +2,15 @@ const { nanoid } = require('nanoid');
 const { playlistSongBean } = require('../db/index');
 
 class PlaylistSongDao {
-  static insertPlaylistSong(payload) {
-    return playlistSongBean.create({
-      id: `playlist-song-${nanoid(16)}`,
-      ...payload,
-      created_date: new Date(),
-    });
+  static insertPlaylistSong(payload, transaction) {
+    return playlistSongBean.create(
+      {
+        id: `playlist-song-${nanoid(16)}`,
+        ...payload,
+        created_date: new Date(),
+      },
+      { transaction }
+    );
   }
 
   static findBySongId(songId) {
@@ -17,10 +20,13 @@ class PlaylistSongDao {
     });
   }
 
-  static deleteBySongId(songId) {
-    return playlistSongBean.destroy({
-      where: { songId },
-    });
+  static deleteBySongId(songId, transaction) {
+    return playlistSongBean.destroy(
+      {
+        where: { songId },
+      },
+      { transaction }
+    );
   }
 }
 

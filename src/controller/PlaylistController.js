@@ -58,6 +58,16 @@ class PlaylistController {
     const message = await PlaylistService.deletePlaylist(credentialId, id);
     return res.ok({ h, message });
   }
+
+  static async getPlaylistActivity(request, h) {
+    const { id } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+    const activities = await PlaylistService.getPlaylistActivity(
+      credentialId,
+      id
+    );
+    return res.ok({ h, data: { ...activities } });
+  }
 }
 
 module.exports = PlaylistController;

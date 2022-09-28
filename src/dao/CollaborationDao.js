@@ -1,7 +1,7 @@
 const { nanoid } = require('nanoid');
 const { collaborationBean } = require('../db/index');
 
-class AlbumDao {
+class CollaborationDao {
   static insertCollaboration(payload) {
     return collaborationBean.create({
       id: `collaboration-${nanoid(16)}`,
@@ -31,4 +31,4 @@ class AlbumDao {
   }
 }
 
-module.exports = AlbumDao;
+module.exports = CollaborationDao;

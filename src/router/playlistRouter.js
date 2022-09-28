@@ -49,4 +49,12 @@ module.exports = [
       auth: 'openmusic_jwt',
     },
   },
+  {
+    method: 'GET',
+    path: '/playlists/{id}/activities',
+    handler: PlaylistController.getPlaylistActivity,
+    options: {
+      auth: 'openmusic_jwt',
+    },
+  },
 ];
