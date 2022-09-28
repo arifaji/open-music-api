@@ -1,7 +1,7 @@
 const res = require('../util/response');
 const UserService = require('../service/UserService');
 
-class SongController {
+class UserController {
   static async createUser(request, h) {
     const { payload } = request;
     const user = await UserService.createUser(payload);
@@ -9,4 +9,4 @@ class SongController {
   }
 }
 
-module.exports = SongController;
+module.exports = UserController;

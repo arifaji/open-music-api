@@ -1,10 +1,14 @@
 const Sequelize = require('sequelize');
-const albums = require('./albums');
-const songs = require('./songs');
-const users = require('./users');
-const authentications = require('./authentications');
 
-const models = [albums, songs, users, authentications];
+const models = [].concat(
+  require('./albums'),
+  require('./songs'),
+  require('./users'),
+  require('./authentications'),
+  require('./playlists'),
+  require('./playlistSongs')
+);
+
 const db = {};
 
 const sequelize = new Sequelize(

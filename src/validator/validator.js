@@ -32,6 +32,14 @@ schemas[validationSchema.REFRESH_TOKEN] = Joi.object({
   refreshToken: Joi.string().required(),
 });
 
+schemas[validationSchema.INSERT_PLAYLIST] = Joi.object({
+  name: Joi.string().required(),
+});
+
+schemas[validationSchema.INSERT_SONG_PLAYLIST] = Joi.object({
+  songId: Joi.string().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

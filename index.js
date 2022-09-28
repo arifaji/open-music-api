@@ -21,7 +21,6 @@ const init = async () => {
   });
 
   await server.register([
-    router,
     {
       plugin: Jwt,
     },
@@ -42,6 +41,8 @@ const init = async () => {
       },
     }),
   });
+
+  await server.register(router);
 
   server.ext('onPreResponse', (request, h) => {
     const { response } = request;

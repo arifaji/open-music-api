@@ -4,4 +4,6 @@ exports.validationSchema = Object.freeze({
   INSERT_USER: 'insertUser',
   LOGIN_USER: 'loginUser',
   REFRESH_TOKEN: 'refreshToken',
+  INSERT_PLAYLIST: 'insertPlaylist',
+  INSERT_SONG_PLAYLIST: 'insertSongPlaylist',
 });
