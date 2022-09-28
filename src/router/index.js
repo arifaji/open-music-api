@@ -3,7 +3,8 @@ const routes = [].concat(
   require('./songRouter'),
   require('./userRouter'),
   require('./authRouter'),
-  require('./playlistRouter')
+  require('./playlistRouter'),
+  require('./collaborationRouter')
 );
 
 module.exports = {

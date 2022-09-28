@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const model = sequelize.define(
-    'playlistBean',
+    'collaborationBean',
     {
       id: {
         type: DataTypes.STRING,
@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes) => {
         field: 'id',
         allowNull: false,
       },
-      name: {
+      playlistId: {
         type: DataTypes.STRING,
-        field: 'name',
+        field: 'playlist_id',
         allowNull: false,
       },
       userId: {
@@ -30,33 +30,21 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'playlists',
+      tableName: 'collaborations',
       timestamps: false,
     }
   );
 
-  model.associate = ({ userBean, playlistSongBean, collaborationBean }) => {
-    model.belongsToUser = model.belongsTo(userBean, {
-      as: 'user',
-      foreignKey: 'user_id',
-      targetKey: 'id',
-    });
-    model.hasManyPlaylistSong = model.hasMany(playlistSongBean, {
-      as: 'songs',
-      foreignKey: 'playlist_id',
-      targetKey: 'id',
-    });
-    model.hasManyCollaboration = model.hasMany(collaborationBean, {
-      as: 'collaboration',
-      foreignKey: 'playlist_id',
-      targetKey: 'id',
-    });
-  };
+  // model.associate = ({ playlistBean }) => {
+  //   model.hasOnePlaylist = model.hasOne(playlistBean, {
+  //     as: 'playlist',
+  //     targetKey: 'playlist_id',
+  //   });
+  // };
 
   model.attributes = [
     'id',
-    'name',
-    'year',
+    'playlistId',
     'userId',
     'created_date',
     'modified_date',

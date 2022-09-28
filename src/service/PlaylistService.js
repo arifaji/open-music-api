@@ -3,6 +3,7 @@ const _ = require('lodash');
 const SongDao = require('../dao/SongDao');
 const PlaylistDao = require('../dao/PlaylistDao');
 const PlaylistSongDao = require('../dao/PlaylistSongDao');
+const CollaborationDao = require('../dao/CollaborationDao');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
 const InvariantError = require('../exceptions/InvariantError');
@@ -33,7 +34,14 @@ class PlaylistService {
       throw new NotFoundError('Playlist Not Found...');
     }
     if (playlist.userId !== userId) {
-      throw new AuthorizationError('Forbidden...');
+      const collaboration =
+        await CollaborationDao.findCollaborationByPlaylistAndUser({
+          playlistId,
+          userId,
+        });
+      if (!collaboration) {
+        throw new AuthorizationError('Forbidden...');
+      }
     }
     const song = await SongDao.getSongById(songId);
     if (!song) {
@@ -53,13 +61,18 @@ class PlaylistService {
       throw new NotFoundError('Playlist Not Found...');
     }
     if (playlist.userId !== userId) {
-      throw new AuthorizationError('Forbidden...');
+      const collaboration =
+        await CollaborationDao.findCollaborationByPlaylistAndUser({
+          playlistId,
+          userId,
+        });
+      if (!collaboration) {
+        throw new AuthorizationError('Forbidden...');
+      }
     }
-    const playlistSongs =
-      await PlaylistDao.findAllPlaylistSongsByUserIdAndPlaylistId(
-        userId,
-        playlistId
-      );
+    const playlistSongs = await PlaylistDao.findAllPlaylistSongsByAndPlaylistId(
+      playlistId
+    );
     return playlistSongs;
   }
 
@@ -71,7 +84,14 @@ class PlaylistService {
       throw new NotFoundError('Playlist Not Found...');
     }
     if (playlist.userId !== userId) {
-      throw new AuthorizationError('Forbidden...');
+      const collaboration =
+        await CollaborationDao.findCollaborationByPlaylistAndUser({
+          playlistId,
+          userId,
+        });
+      if (!collaboration) {
+        throw new AuthorizationError('Forbidden...');
+      }
     }
     const playlistSong = await PlaylistSongDao.findBySongId(songId);
     if (!playlistSong) {

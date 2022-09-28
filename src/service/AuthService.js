@@ -17,7 +17,7 @@ class AuthenticationService {
     const valid = validate(validationSchema.LOGIN_USER, payload);
     const { value } = valid;
 
-    const user = await UserDao.findUserByUsername(value.username);
+    const user = await UserDao.findUser(value.username);
     if (!user) {
       throw new AuthenticationError('Incorrect Username / Password...');
     }

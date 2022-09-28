@@ -6,4 +6,5 @@ exports.validationSchema = Object.freeze({
   REFRESH_TOKEN: 'refreshToken',
   INSERT_PLAYLIST: 'insertPlaylist',
   INSERT_SONG_PLAYLIST: 'insertSongPlaylist',
+  COLLABORATION: 'collaboration',
 });

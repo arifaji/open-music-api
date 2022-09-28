@@ -6,7 +6,8 @@ const models = [].concat(
   require('./users'),
   require('./authentications'),
   require('./playlists'),
-  require('./playlistSongs')
+  require('./playlistSongs'),
+  require('./collaborations')
 );
 
 const db = {};

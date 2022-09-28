@@ -1,5 +1,8 @@
 const { nanoid } = require('nanoid');
+
 const { Sequelize, playlistBean, playlistSongBean } = require('../db/index');
+
+const { Op } = Sequelize;
 
 class PlaylistDao {
   static insertPlaylist(payload) {
@@ -12,11 +15,21 @@ class PlaylistDao {
 
   static findAllPlaylistByUserId(userId) {
     return playlistBean.findAll({
-      where: { userId },
+      where: {
+        [Op.or]: [
+          { '$playlistBean.user_id$': userId },
+          { '$collaboration.user_id$': userId },
+        ],
+      },
       attributes: ['id', 'name', [Sequelize.col('user.username'), 'username']],
       include: [
         {
           association: playlistBean.belongsToUser,
+          attributes: [],
+        },
+        {
+          association: playlistBean.hasManyCollaboration,
+          required: false,
           attributes: [],
         },
       ],
@@ -30,9 +43,9 @@ class PlaylistDao {
     });
   }
 
-  static findAllPlaylistSongsByUserIdAndPlaylistId(userId, playlistId) {
+  static findAllPlaylistSongsByAndPlaylistId(id) {
     return playlistBean.findOne({
-      where: { userId, id: playlistId },
+      where: { id },
       attributes: ['id', 'name', [Sequelize.col('user.username'), 'username']],
       include: [
         {

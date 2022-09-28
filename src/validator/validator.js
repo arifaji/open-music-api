@@ -40,6 +40,11 @@ schemas[validationSchema.INSERT_SONG_PLAYLIST] = Joi.object({
   songId: Joi.string().required(),
 });
 
+schemas[validationSchema.COLLABORATION] = Joi.object({
+  playlistId: Joi.string().required(),
+  userId: Joi.string().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

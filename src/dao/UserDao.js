@@ -13,7 +13,21 @@ class AlbumDao {
   static findUserByUsername(username) {
     return userBean.findOne({
       where: { username },
+      attributes: ['id'],
+    });
+  }
+
+  static findUser(username) {
+    return userBean.findOne({
+      where: { username },
       attributes: ['id', 'password'],
+    });
+  }
+
+  static findUserById(id) {
+    return userBean.findOne({
+      where: { id },
+      attributes: ['id'],
     });
   }
 }
