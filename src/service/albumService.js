@@ -18,30 +18,29 @@ class AlbumService {
   }
 
   static async insertAlbum(payload) {
-    const valid = validate(validationSchema.INSERT_ALBUM, payload);
-    const { value } = valid;
+    const { value } = validate(validationSchema.INSERT_ALBUM, payload);
     const album = await AlbumDao.insertAlbum(value);
     return _.pick(album, ['id']);
   }
 
   static async editAlbum(id, payload) {
-    const valid = validate(validationSchema.INSERT_ALBUM, payload);
-    const { name, year } = valid.value;
-    const existingAlbum = await AlbumDao.getAlbumById(id);
-    if (!existingAlbum) {
-      throw new NotFoundError('Album not found..');
-    }
-    await AlbumDao.updateAlbumById(id, { name, year });
+    const { value } = validate(validationSchema.INSERT_ALBUM, payload);
+    await AlbumService.validateExistingAlbumById(id);
+    await AlbumDao.updateAlbumById(id, value);
     return 'Success update album';
   }
 
   static async deleteAlbum(id) {
+    await AlbumService.validateExistingAlbumById(id);
+    await AlbumDao.deleteAlbumById(id);
+    return 'Success delete album...';
+  }
+
+  static async validateExistingAlbumById(id) {
     const existingAlbum = await AlbumDao.getAlbumById(id);
     if (!existingAlbum) {
       throw new NotFoundError('Album not found..');
     }
-    await AlbumDao.deleteAlbumById(id);
-    return 'Success delete album...';
   }
 }
 

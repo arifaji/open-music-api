@@ -4,7 +4,7 @@ const Jwt = require('@hapi/jwt');
 const config = require('./src/config');
 const logger = require('./src/util/logger');
 const router = require('./src/router');
-const { sequelize } = require('./src/db/index');
+const { authenticateDb } = require('./src/db/index');
 const ClientError = require('./src/exceptions/ClientError');
 
 require('dotenv').config();
@@ -62,13 +62,7 @@ const init = async () => {
   });
 
   await server.start();
-  logger.info(`Server berjalan pada ${server.info.uri} ${process.env.ENV}`);
-  try {
-    await sequelize.authenticate();
-    logger.info('Database connected');
-  } catch (error) {
-    logger.info('Unable to connect to the database : ', error);
-  }
+  await authenticateDb();
 };
 
 init();

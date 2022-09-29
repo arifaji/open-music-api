@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-
+const logger = require('../util/logger');
 const models = [].concat(
   require('./albums'),
   require('./songs'),
@@ -37,5 +37,14 @@ Object.keys(db).forEach((modelName) => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
+db.authenticateDb = async () => {
+  try {
+    await sequelize.authenticate();
+    logger.info('Database connected');
+  } catch (error) {
+    logger.info('Unable to connect to the database : ', error);
+  }
+};
 
 module.exports = db;

@@ -26,24 +26,16 @@ class PlaylistService {
     return playlists;
   }
 
-  static async insertSongToPlaylist(userId, playlistId, payload) {
+  static async insertSongToPlaylist(credentialId, playlistId, payload) {
     const { value } = validate(validationSchema.INSERT_SONG_PLAYLIST, payload);
     const { songId } = value;
-
-    const playlist = await PlaylistDao.getPlaylistById(playlistId);
-    if (!playlist) {
-      throw new NotFoundError('Playlist Not Found...');
-    }
-    if (playlist.userId !== userId) {
-      const collaboration =
-        await CollaborationDao.findCollaborationByPlaylistAndUser({
-          playlistId,
-          userId,
-        });
-      if (!collaboration) {
-        throw new AuthorizationError('Forbidden...');
-      }
-    }
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
+    await PlaylistService.validatePlaylistOwnerAndCollaborator(
+      playlist,
+      credentialId
+    );
     const song = await SongDao.getSongById(songId);
     if (!song) {
       throw new NotFoundError('Song Not Found...');
@@ -55,7 +47,7 @@ class PlaylistService {
         {
           playlistId,
           songId,
-          userId,
+          userId: credentialId,
         },
         transaction
       );
@@ -63,7 +55,7 @@ class PlaylistService {
         {
           playlistId,
           songId,
-          userId,
+          userId: credentialId,
           action: 'add',
         },
         transaction
@@ -76,44 +68,30 @@ class PlaylistService {
     return 'Success add song to playlist...';
   }
 
-  static async getAllPlaylistSongs(userId, playlistId) {
-    const playlist = await PlaylistDao.getPlaylistById(playlistId);
-    if (!playlist) {
-      throw new NotFoundError('Playlist Not Found...');
-    }
-    if (playlist.userId !== userId) {
-      const collaboration =
-        await CollaborationDao.findCollaborationByPlaylistAndUser({
-          playlistId,
-          userId,
-        });
-      if (!collaboration) {
-        throw new AuthorizationError('Forbidden...');
-      }
-    }
+  static async getAllPlaylistSongs(credentialId, playlistId) {
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
+    await PlaylistService.validatePlaylistOwnerAndCollaborator(
+      playlist,
+      credentialId
+    );
     const playlistSongs = await PlaylistDao.findAllPlaylistSongsByAndPlaylistId(
       playlistId
     );
     return playlistSongs;
   }
 
-  static async deleteSongPlaylist(userId, playlistId, payload) {
+  static async deleteSongPlaylist(credentialId, playlistId, payload) {
     const { value } = validate(validationSchema.INSERT_SONG_PLAYLIST, payload);
     const { songId } = value;
-    const playlist = await PlaylistDao.getPlaylistById(playlistId);
-    if (!playlist) {
-      throw new NotFoundError('Playlist Not Found...');
-    }
-    if (playlist.userId !== userId) {
-      const collaboration =
-        await CollaborationDao.findCollaborationByPlaylistAndUser({
-          playlistId,
-          userId,
-        });
-      if (!collaboration) {
-        throw new AuthorizationError('Forbidden...');
-      }
-    }
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
+    await PlaylistService.validatePlaylistOwnerAndCollaborator(
+      playlist,
+      credentialId
+    );
     const playlistSong = await PlaylistSongDao.findBySongId(songId);
     if (!playlistSong) {
       throw new InvariantError('Song in Playlist Not Found...');
@@ -126,7 +104,7 @@ class PlaylistService {
         {
           playlistId,
           songId,
-          userId,
+          userId: credentialId,
           action: 'delete',
         },
         transaction
@@ -140,10 +118,9 @@ class PlaylistService {
   }
 
   static async deletePlaylist(userId, playlistId) {
-    const playlist = await PlaylistDao.getPlaylistById(playlistId);
-    if (!playlist) {
-      throw new NotFoundError('Playlist Not Found...');
-    }
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
     if (playlist.userId !== userId) {
       throw new AuthorizationError('Forbidden...');
     }
@@ -151,21 +128,14 @@ class PlaylistService {
     return 'Success Delete Playlist...';
   }
 
-  static async getPlaylistActivity(userId, playlistId) {
-    const playlist = await PlaylistDao.getPlaylistById(playlistId);
-    if (!playlist) {
-      throw new NotFoundError('Playlist Not Found...');
-    }
-    if (playlist.userId !== userId) {
-      const collaboration =
-        await CollaborationDao.findCollaborationByPlaylistAndUser({
-          playlistId,
-          userId,
-        });
-      if (!collaboration) {
-        throw new AuthorizationError('Forbidden...');
-      }
-    }
+  static async getPlaylistActivity(credentialId, playlistId) {
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
+    await PlaylistService.validatePlaylistOwnerAndCollaborator(
+      playlist,
+      credentialId
+    );
     const activities = await PlaylistSongActivityDao.getAllActivityByPlaylistId(
       playlistId
     );
@@ -173,6 +143,27 @@ class PlaylistService {
       playlistId,
       activities,
     };
+  }
+
+  static async validateExistingPlaylistById(playlistId) {
+    const playlist = await PlaylistDao.getPlaylistById(playlistId);
+    if (!playlist) {
+      throw new NotFoundError('Playlist Not Found...');
+    }
+    return _.get(playlist, 'dataValues', playlist);
+  }
+
+  static async validatePlaylistOwnerAndCollaborator(playlist, credentialId) {
+    if (playlist.userId !== credentialId) {
+      const collaboration =
+        await CollaborationDao.findCollaborationByPlaylistAndUser({
+          playlistId: playlist.id,
+          userId: credentialId,
+        });
+      if (!collaboration) {
+        throw new AuthorizationError('Forbidden...');
+      }
+    }
   }
 }
 
