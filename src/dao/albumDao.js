@@ -16,11 +16,13 @@ class AlbumDao {
       ],
     });
     const result = _.get(album, 'dataValues', album);
-    result.coverUrl = null;
-    if (_.get(result, 'coverImg')) {
-      result.coverUrl = `http://${process.env.HOST}:${process.env.PORT}${path.ALBUM_COVER_LINKs}/${result.coverImg}`;
+    if (result) {
+      result.coverUrl = null;
+      if (_.get(result, 'coverImg')) {
+        result.coverUrl = `http://${process.env.HOST}:${process.env.PORT}${path.ALBUM_COVER_LINKs}/${result.coverImg}`;
+      }
+      result.coverImg = undefined;
     }
-    result.coverImg = undefined;
     return result;
   }
 
