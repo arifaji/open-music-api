@@ -1,4 +1,3 @@
-const path = require('path');
 const AlbumController = require('../controller/AlbumController');
 const { path: defaultPath } = require('../util/enums');
 
