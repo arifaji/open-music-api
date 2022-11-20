@@ -6,7 +6,6 @@ const NotFoundError = require('../exceptions/NotFoundError');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
 const StorageService = require('./StorageService');
-const cacheService = require('./CacheService');
 const CacheService = require('./CacheService');
 
 class AlbumService {
