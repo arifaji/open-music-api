@@ -10,6 +10,7 @@ const { validationSchema } = require('../util/enums');
 const InvariantError = require('../exceptions/InvariantError');
 const AuthorizationError = require('../exceptions/AuthorizationError');
 const NotFoundError = require('../exceptions/NotFoundError');
+const ProducerService = require('./ProducerService');
 
 class PlaylistService {
   static async insertPlaylist(userId, payload) {
@@ -164,6 +165,26 @@ class PlaylistService {
         throw new AuthorizationError('Forbidden...');
       }
     }
+  }
+
+  static async exportPlaylist(userId, playlistId, payload) {
+    const { value } = validate(validationSchema.EXPORT_PLAYLIST, payload);
+    const playlist = await PlaylistService.validateExistingPlaylistById(
+      playlistId
+    );
+    if (playlist.userId !== userId) {
+      throw new AuthorizationError('Forbidden...');
+    }
+    const message = {
+      playlistId,
+      targetEmail: value.targetEmail,
+    };
+
+    await ProducerService.sendMessage(
+      'export:playlists',
+      JSON.stringify(message)
+    );
+    return `Your Request Hasbeen Queued...`;
   }
 }
 

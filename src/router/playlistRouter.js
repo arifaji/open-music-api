@@ -57,4 +57,12 @@ module.exports = [
       auth: 'openmusic_jwt',
     },
   },
+  {
+    method: 'POST',
+    path: '/export/playlists/{id}',
+    handler: PlaylistController.exportPlaylist,
+    options: {
+      auth: 'openmusic_jwt',
+    },
+  },
 ];

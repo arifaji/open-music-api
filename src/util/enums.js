@@ -7,4 +7,5 @@ exports.validationSchema = Object.freeze({
   INSERT_PLAYLIST: 'insertPlaylist',
   INSERT_SONG_PLAYLIST: 'insertSongPlaylist',
   COLLABORATION: 'collaboration',
+  EXPORT_PLAYLIST: 'exportPlaylist',
 });

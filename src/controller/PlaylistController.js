@@ -68,6 +68,18 @@ class PlaylistController {
     );
     return res.ok({ h, data: { ...activities } });
   }
+
+  static async exportPlaylist(request, h) {
+    const { id: playlistId } = request.params;
+    const { payload } = request;
+    const { id: credentialId } = request.auth.credentials;
+    const message = await PlaylistService.exportPlaylist(
+      credentialId,
+      playlistId,
+      payload
+    );
+    return res.created({ h, message });
+  }
 }
 
 module.exports = PlaylistController;

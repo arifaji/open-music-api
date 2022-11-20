@@ -45,6 +45,10 @@ schemas[validationSchema.COLLABORATION] = Joi.object({
   userId: Joi.string().required(),
 });
 
+schemas[validationSchema.EXPORT_PLAYLIST] = Joi.object({
+  targetEmail: Joi.string().email().required(),
+});
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(

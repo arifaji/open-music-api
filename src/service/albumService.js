@@ -1,4 +1,5 @@
 const _ = require('lodash');
+
 const AlbumDao = require('../dao/AlbumDao');
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
