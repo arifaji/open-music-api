@@ -1,5 +1,7 @@
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
+const path = require('path');
 
 const config = require('./src/config');
 const logger = require('./src/util/logger');
@@ -8,6 +10,8 @@ const { authenticateDb } = require('./src/db/index');
 const ClientError = require('./src/exceptions/ClientError');
 
 require('dotenv').config();
+
+global.appRoot = path.resolve(__dirname);
 
 const init = async () => {
   const server = Hapi.server({
@@ -23,6 +27,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 

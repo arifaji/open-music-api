@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         field: 'year',
         allowNull: false,
       },
+      coverImg: {
+        type: DataTypes.STRING,
+        field: 'cover_img',
+        allowNull: true,
+      },
       created_date: {
         type: DataTypes.DATE,
         field: 'created_date',
@@ -43,7 +48,14 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  model.attributes = ['id', 'name', 'year', 'created_date', 'modified_date'];
+  model.attributes = [
+    'id',
+    'name',
+    'year',
+    'coverImg',
+    'created_date',
+    'modified_date',
+  ];
 
   return model;
 };

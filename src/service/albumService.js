@@ -5,6 +5,7 @@ const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
+const StorageService = require('./StorageService');
 
 class AlbumService {
   static async getAlbumById(id) {
@@ -42,6 +43,14 @@ class AlbumService {
     if (!existingAlbum) {
       throw new NotFoundError('Album not found..');
     }
+  }
+
+  static async uploadCover(id, data) {
+    validate(validationSchema.ALBUM_COVER_IMG, _.get(data, 'hapi.headers'));
+    await AlbumService.validateExistingAlbumById(id);
+    const filename = await StorageService.writeFile(data, data.hapi, id);
+    await AlbumDao.updateAlbumById(id, { coverImg: filename });
+    return 'Success Upload Album Cover...';
   }
 }
 

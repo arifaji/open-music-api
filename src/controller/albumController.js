@@ -26,6 +26,13 @@ class AlbumController {
     const message = await AlbumService.deleteAlbum(id);
     return res.ok({ h, message });
   }
+
+  static async uploadCover(request, h) {
+    const { id } = request.params;
+    const { cover: data } = request.payload;
+    const message = await AlbumService.uploadCover(id, data);
+    return res.created({ h, message });
+  }
 }
 
 module.exports = AlbumController;

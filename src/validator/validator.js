@@ -49,6 +49,19 @@ schemas[validationSchema.EXPORT_PLAYLIST] = Joi.object({
   targetEmail: Joi.string().email().required(),
 });
 
+schemas[validationSchema.ALBUM_COVER_IMG] = Joi.object({
+  'content-type': Joi.string()
+    .valid(
+      'image/apng',
+      'image/avif',
+      'image/gif',
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    )
+    .required(),
+}).unknown();
+
 const validate = (schema, payload) => {
   if (schemas[schema]) {
     const validSchema = schemas[schema].validate(
