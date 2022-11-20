@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const logger = require('../util/logger');
 const models = [].concat(
   require('./albums'),
+  require('./albumsLikes'),
   require('./songs'),
   require('./users'),
   require('./authentications'),

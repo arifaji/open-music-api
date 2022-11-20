@@ -8,6 +8,7 @@ const logger = require('./src/util/logger');
 const router = require('./src/router');
 const { authenticateDb } = require('./src/db/index');
 const ClientError = require('./src/exceptions/ClientError');
+const { connectRedis } = require('./src/util/redis');
 
 require('dotenv').config();
 
@@ -70,6 +71,7 @@ const init = async () => {
 
   await server.start();
   await authenticateDb();
+  await connectRedis();
 };
 
 init();

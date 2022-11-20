@@ -1,6 +1,6 @@
 const { nanoid } = require('nanoid');
 const _ = require('lodash');
-const { albumBean } = require('../db/index');
+const { albumBean, albumLikesBean } = require('../db/index');
 const { path } = require('../util/enums');
 
 class AlbumDao {
@@ -51,6 +51,30 @@ class AlbumDao {
 
   static deleteAlbumById(id) {
     return albumBean.destroy({ where: { id } });
+  }
+
+  static getLikesAlbum(albumId, userId) {
+    return albumLikesBean.findOne({
+      where: { albumId, userId },
+    });
+  }
+
+  static likeAlbum(albumId, userId) {
+    const generateAlbumLikeId = `album-like-${nanoid(16)}`;
+    return albumLikesBean.create({
+      id: generateAlbumLikeId,
+      albumId,
+      userId,
+      created_date: new Date(),
+    });
+  }
+
+  static dislikeAlbum(albumId, userId) {
+    return albumLikesBean.destroy({ where: { albumId, userId } });
+  }
+
+  static getTotalLikes(albumId) {
+    return albumLikesBean.count({ where: { albumId } });
   }
 }
 

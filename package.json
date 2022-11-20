@@ -25,7 +25,7 @@
     "node-pg-migrate": "^6.2.2",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
-    "redis": "^3.1.2",
+    "redis": "^4.5.0",
     "sequelize": "^6.23.0",
     "winston": "^3.7.2"
   },

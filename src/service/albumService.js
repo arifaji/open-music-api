@@ -6,6 +6,8 @@ const NotFoundError = require('../exceptions/NotFoundError');
 const { validate } = require('../validator/validator');
 const { validationSchema } = require('../util/enums');
 const StorageService = require('./StorageService');
+const cacheService = require('./CacheService');
+const CacheService = require('./CacheService');
 
 class AlbumService {
   static async getAlbumById(id) {
@@ -51,6 +53,30 @@ class AlbumService {
     const filename = await StorageService.writeFile(data, data.hapi, id);
     await AlbumDao.updateAlbumById(id, { coverImg: filename });
     return 'Success Upload Album Cover...';
+  }
+
+  static async likeOrDislikeAlbum(albumId, credentialId) {
+    await AlbumService.validateExistingAlbumById(albumId);
+    const existingLike = await AlbumDao.getLikesAlbum(albumId, credentialId);
+    if (existingLike) {
+      await AlbumDao.dislikeAlbum(albumId, credentialId);
+    } else {
+      await AlbumDao.likeAlbum(albumId, credentialId);
+    }
+    await CacheService.delete(`album-likes:${albumId}`);
+    return 'Success like album...';
+  }
+
+  static async totalLikesAlbum(id) {
+    await AlbumService.validateExistingAlbumById(id);
+    const likes = await AlbumDao.getTotalLikes(id);
+    await CacheService.set(`album-likes:${id}`, likes);
+    return likes;
+  }
+
+  static async totalLikesAlbumCache(id) {
+    const result = await CacheService.get(`album-likes:${id}`);
+    return Number(result);
   }
 }
 
