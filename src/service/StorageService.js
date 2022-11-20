@@ -6,7 +6,11 @@ class StorageService {
     if (!fs.existsSync(path.ALBUM_COVER)) {
       fs.mkdirSync(path.ALBUM_COVER, { recursive: true });
     }
-    const filename = `${id}-${+new Date()}${meta.filename}`;
+    const ext = meta.filename.substring(
+      meta.filename.lastIndexOf('.') + 1,
+      meta.filename.length
+    );
+    const filename = `${id}-${+new Date()}.${ext}`;
     const pathToSave = `${path.ALBUM_COVER}/${filename}`;
 
     const fileStream = fs.createWriteStream(pathToSave);
